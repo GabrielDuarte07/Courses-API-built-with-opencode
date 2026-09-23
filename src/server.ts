@@ -1,6 +1,9 @@
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
+import swagger from "@fastify/swagger";
+import swaggerUi from "@fastify/swagger-ui";
 import {
+  createJsonSchemaTransform,
   serializerCompiler,
   validatorCompiler,
   type ZodTypeProvider,
@@ -32,6 +35,41 @@ async function start(): Promise<void> {
 
     await app.register(helmet, {
       contentSecurityPolicy: false,
+    });
+
+    await app.register(swagger, {
+      openapi: {
+        openapi: "3.0.3",
+        info: {
+          title: "API Courses",
+          description:
+            "REST API for managing users and courses, including enrollment and unenrollment.",
+          version: "0.1.0",
+        },
+        servers: [
+          {
+            url: `http://localhost:${PORT}`,
+            description: "Development server",
+          },
+        ],
+        tags: [
+          {
+            name: "users",
+            description: "Endpoints for managing users and their enrollments",
+          },
+          {
+            name: "courses",
+            description: "Endpoints for managing courses",
+          },
+        ],
+      },
+      transform: createJsonSchemaTransform({
+        skipList: ["/documentation/static/*"],
+      }),
+    });
+
+    await app.register(swaggerUi, {
+      routePrefix: "/documentation",
     });
 
     await app.register(userRoutes);
