@@ -1,5 +1,6 @@
 import type {
   CourseResponse,
+  CourseUserResponse,
   CreateCourse,
   UpdateCourse,
 } from "./course.interfaces.js";
@@ -8,6 +9,7 @@ import {
   deleteCourse as removeCourse,
   findAllCourses,
   findCourseById,
+  findCourseUsers,
   updateCourse as updateCourseRecord,
 } from "./course.repository.js";
 
@@ -42,4 +44,16 @@ async function deleteCourse(id: string): Promise<CourseResponse> {
   return removeCourse(id);
 }
 
-export { createCourse, deleteCourse, getCourseById, getCourses, updateCourse };
+async function getCourseUsers(courseId: string): Promise<CourseUserResponse[]> {
+  await getCourseById(courseId);
+  return findCourseUsers(courseId);
+}
+
+export {
+  createCourse,
+  deleteCourse,
+  getCourseById,
+  getCourseUsers,
+  getCourses,
+  updateCourse,
+};

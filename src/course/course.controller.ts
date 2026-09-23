@@ -9,6 +9,7 @@ import {
   createCourse,
   deleteCourse,
   getCourseById,
+  getCourseUsers,
   getCourses,
   NotFoundError,
   updateCourse,
@@ -74,10 +75,23 @@ async function deleteCourseHandler(
   }
 }
 
+async function getCourseUsersHandler(
+  request: FastifyRequest<{ Params: CourseIdParams }>,
+  reply: FastifyReply,
+): Promise<void> {
+  try {
+    const users = await getCourseUsers(request.params.id);
+    reply.send(users);
+  } catch (err) {
+    if (!sendDomainError(reply, err)) throw err;
+  }
+}
+
 export {
   createCourseHandler,
   deleteCourseHandler,
   getCourseByIdHandler,
+  getCourseUsersHandler,
   getCoursesHandler,
   updateCourseHandler,
 };

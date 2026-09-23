@@ -2,6 +2,8 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 
 import type {
   CreateUser,
+  EnrollCourse,
+  UnenrollCourseParams,
   UpdateUser,
   UserIdParams,
 } from "./user.interfaces.js";
@@ -9,9 +11,12 @@ import {
   ConflictError,
   createUser,
   deleteUser,
+  enrollUserInCourse,
   getUserById,
+  getUserCourses,
   getUsers,
   NotFoundError,
+  unenrollUserFromCourse,
   updateUser,
 } from "./user.services.js";
 
@@ -83,10 +88,55 @@ async function deleteUserHandler(
   }
 }
 
+async function getUserCoursesHandler(
+  request: FastifyRequest<{ Params: UserIdParams }>,
+  reply: FastifyReply,
+): Promise<void> {
+  try {
+    const courses = await getUserCourses(request.params.id);
+    reply.send(courses);
+  } catch (err) {
+    if (!sendDomainError(reply, err)) throw err;
+  }
+}
+
+async function enrollUserInCourseHandler(
+  request: FastifyRequest<{ Params: UserIdParams; Body: EnrollCourse }>,
+  reply: FastifyReply,
+): Promise<void> {
+  try {
+    const course = await enrollUserInCourse(
+      request.params.id,
+      request.body.courseId,
+    );
+    reply.status(201).send(course);
+  } catch (err) {
+    if (!sendDomainError(reply, err)) throw err;
+  }
+}
+
+async function unenrollUserFromCourseHandler(
+  request: FastifyRequest<{ Params: UnenrollCourseParams }>,
+  reply: FastifyReply,
+): Promise<void> {
+  try {
+    const result = await unenrollUserFromCourse(
+      request.params.id,
+      request.params.courseId,
+    );
+    reply.send(result);
+  } catch (err) {
+    if (!sendDomainError(reply, err)) throw err;
+  }
+}
+
 export {
   createUserHandler,
   deleteUserHandler,
+  enrollUserInCourseHandler,
   getUserByIdHandler,
+  getUserCoursesHandler,
   getUsersHandler,
+  unenrollUserFromCourseHandler,
   updateUserHandler,
 };

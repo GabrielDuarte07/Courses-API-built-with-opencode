@@ -2,7 +2,9 @@ import { prisma } from "../prisma-client.js";
 
 import type {
   CreateUser,
+  UnenrollCourseResponse,
   UpdateUser,
+  UserCourseResponse,
   UserResponse,
 } from "./user.interfaces.js";
 
@@ -33,11 +35,47 @@ function deleteUser(id: string): Promise<UserResponse> {
   return prisma.user.delete({ where: { id } });
 }
 
+function findUserCourses(userId: string): Promise<UserCourseResponse[]> {
+  return prisma.userCourse
+    .findMany({
+      where: { userId },
+      include: { course: true },
+      orderBy: { enrolledAt: "asc" },
+    })
+    .then((rows) =>
+      rows.map(({ enrolledAt, course }) => ({ ...course, enrolledAt })),
+    );
+}
+
+function enrollUserInCourse(
+  userId: string,
+  courseId: string,
+): Promise<UserCourseResponse> {
+  return prisma.userCourse
+    .create({
+      data: { userId, courseId },
+      include: { course: true },
+    })
+    .then(({ enrolledAt, course }) => ({ ...course, enrolledAt }));
+}
+
+function unenrollUserFromCourse(
+  userId: string,
+  courseId: string,
+): Promise<UnenrollCourseResponse> {
+  return prisma.userCourse
+    .delete({ where: { userId_courseId: { userId, courseId } } })
+    .then(({ id }) => ({ id }));
+}
+
 export {
   createUser,
   deleteUser,
+  enrollUserInCourse,
   findAllUsers,
   findUserByEmail,
   findUserById,
+  findUserCourses,
+  unenrollUserFromCourse,
   updateUser,
 };

@@ -45,6 +45,19 @@ export const courseIdParamsSchema = z.object({
   id: z.uuid(),
 });
 
+export const courseUsersParamsSchema = z.object({
+  id: z.uuid(),
+});
+
+export const courseUserResponseSchema = z.object({
+  id: z.uuid(),
+  name: z.string(),
+  email: z.email(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  enrolledAt: z.date(),
+});
+
 export const errorResponseSchema = z.object({
   message: z.string(),
 });
@@ -53,3 +66,4 @@ export type CreateCourse = z.infer<typeof createCourseSchema>;
 export type UpdateCourse = z.infer<typeof updateCourseSchema>;
 export type CourseResponse = z.infer<typeof courseResponseSchema>;
 export type CourseIdParams = z.infer<typeof courseIdParamsSchema>;
+export type CourseUserResponse = z.infer<typeof courseUserResponseSchema>;

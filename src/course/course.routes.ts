@@ -5,12 +5,15 @@ import {
   createCourseHandler,
   deleteCourseHandler,
   getCourseByIdHandler,
+  getCourseUsersHandler,
   getCoursesHandler,
   updateCourseHandler,
 } from "./course.controller.js";
 import {
   courseIdParamsSchema,
   courseResponseSchema,
+  courseUserResponseSchema,
+  courseUsersParamsSchema,
   createCourseSchema,
   errorResponseSchema,
   updateCourseSchema,
@@ -85,6 +88,20 @@ const courseRoutes: FastifyPluginAsync = async (
       },
     },
     deleteCourseHandler,
+  );
+
+  app.get(
+    "/courses/:id/users",
+    {
+      schema: {
+        params: courseUsersParamsSchema,
+        response: {
+          200: z.array(courseUserResponseSchema),
+          404: errorResponseSchema,
+        },
+      },
+    },
+    getCourseUsersHandler,
   );
 };
 
