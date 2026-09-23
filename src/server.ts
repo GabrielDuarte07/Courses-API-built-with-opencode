@@ -7,6 +7,7 @@ import {
 } from "@fastify/type-provider-zod";
 import Fastify from "fastify";
 
+import { courseRoutes } from "./course/course.routes.js";
 import { userRoutes } from "./user/user.routes.js";
 
 const app = Fastify({
@@ -34,6 +35,7 @@ async function start(): Promise<void> {
     });
 
     await app.register(userRoutes);
+    await app.register(courseRoutes);
 
     await app.listen({ port: PORT, host: HOST });
   } catch (err) {
