@@ -7,6 +7,8 @@ import {
 } from "@fastify/type-provider-zod";
 import Fastify from "fastify";
 
+import { userRoutes } from "./user/user.routes.js";
+
 const app = Fastify({
   logger: true,
 }).withTypeProvider<ZodTypeProvider>();
@@ -30,6 +32,8 @@ async function start(): Promise<void> {
     await app.register(helmet, {
       contentSecurityPolicy: false,
     });
+
+    await app.register(userRoutes);
 
     await app.listen({ port: PORT, host: HOST });
   } catch (err) {

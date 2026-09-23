@@ -25,3 +25,7 @@ Project guidelines for AI agents working in this repository.
 - When creating functions, the classic function syntax must be a priority.
 - Always try to use the typescript inferential typing whenever possible.
 - Always try to use named imports.
+
+## Development Guidelines
+
+- For entities creation: @./agents/rules/new-entity.md
